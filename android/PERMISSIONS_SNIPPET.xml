@@ -1,0 +1,39 @@
+&lt;!--
+  Add the lines below INSIDE android/app/src/main/AndroidManifest.xml
+  (above the <application> tag) after running `flutter create .` to generate
+  the Android scaffolding.
+
+  These are required for:
+    - Local notifications & exact alarms
+    - Reminders that fire while device is in idle/Doze
+    - Image picker camera + gallery access
+-->
+
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+<uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+<uses-permission android:name="android.permission.WAKE_LOCK"/>
+<uses-permission android:name="android.permission.VIBRATE"/>
+
+&lt;!-- Camera (image_picker) --&gt;
+<uses-feature android:name="android.hardware.camera" android:required="false"/>
+
+&lt;!--
+  Inside <application> ... </application>, add the receivers below so
+  scheduled notifications survive reboots:
+-->
+&lt;!--
+<receiver android:exported="false"
+          android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
+<receiver android:exported="false"
+          android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+    <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+        <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+    </intent-filter>
+</receiver>
+-->

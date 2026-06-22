@@ -1,0 +1,67 @@
+name: maknoon
+description: مَكنون - Manage receipts, warranties, returns, and subscriptions.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+
+  # Routing
+  go_router: ^14.2.7
+
+  # Dependency injection
+  get_it: ^7.7.0
+
+  # Local storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.4
+
+  # Reminders / notifications
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.4
+
+  # Image picking & files
+  image_picker: ^1.1.2
+
+  # Utility
+  intl: ^0.20.2
+  uuid: ^4.4.2
+  google_fonts: ^6.2.1
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.14.2
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/app_icon.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  adaptive_icon_background: "#0F2D1E"
+  adaptive_icon_foreground: "assets/logo/app_icon.png"
+  web:
+    generate: false
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo/
