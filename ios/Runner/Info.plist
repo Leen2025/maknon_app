@@ -44,8 +44,6 @@
 	<string>نحتاج الوصول إلى الصور لاختيار صور الإيصالات والضمانات.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>نحتاج الوصول إلى مكتبة الصور لحفظ الصور.</string>
-	<key>NSUserNotificationsUsageDescription</key>
-	<string>نُرسل لك تذكيرات قبل انتهاء مواعيد الإرجاع والضمانات وتجديد الاشتراكات.</string>
 
 	<!-- ── Network security ───────────────────────────────────────── -->
 	<key>NSAppTransportSecurity</key>

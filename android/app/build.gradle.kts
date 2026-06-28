@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.maknoon"
+    namespace = "com.leenalsaleh.maknoon"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.maknoon"
+        applicationId = "com.leenalsaleh.maknoon"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

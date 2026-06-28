@@ -1,4 +1,4 @@
-package com.example.maknoon
+package com.leenalsaleh.maknoon
 
 import io.flutter.embedding.android.FlutterActivity
 
