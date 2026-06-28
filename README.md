@@ -1,6 +1,6 @@
 # مَكنون (Maknoon)
 
-ليونه
+LEEN ALSALEH
 
 A Flutter app for storing and managing receipts, warranties, return/exchange deadlines, and subscription renewals — with local reminders before anything expires.
 
