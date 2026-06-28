@@ -1,6 +1,11 @@
 # مَكنون (Maknoon)
 
+<<<<<<< HEAD
 LEEN ALSALEH
+=======
+<img width="1381" height="1139" alt="dc8508b5-feef-4eb9-841b-2a9fd2ca1492" src="https://github.com/user-attachments/assets/3750e46f-632b-484a-9883-790a7d4cd96b" />
+
+>>>>>>> 11a76687750deb8875ea0ec0d54464348d159235
 
 A Flutter app for storing and managing receipts, warranties, return/exchange deadlines, and subscription renewals — with local reminders before anything expires.
 
