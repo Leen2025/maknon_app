@@ -9,6 +9,7 @@ import '../../features/receipts/presentation/pages/receipts_list_page.dart';
 import '../../features/reminders/presentation/pages/reminders_page.dart';
 import '../../features/subscriptions/presentation/pages/subscription_details_page.dart';
 import '../../features/subscriptions/presentation/pages/subscription_form_page.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/subscriptions/presentation/pages/subscriptions_list_page.dart';
 import '../../features/warranties/presentation/pages/warranties_list_page.dart';
 import '../../features/warranties/presentation/pages/warranty_details_page.dart';
@@ -19,8 +20,13 @@ class AppRouter {
   AppRouter._();
 
   static final GoRouter router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/splash',
     routes: [
+      GoRoute(
+        path: '/splash',
+        name: AppRoutes.splash,
+        builder: (_, __) => const SplashPage(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             HomeShell(navigationShell: navigationShell),

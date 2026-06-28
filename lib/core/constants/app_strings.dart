@@ -84,4 +84,8 @@ class AppStrings {
   static const tomorrow = 'غداً';
   static const pickFromGallery = 'من المعرض';
   static const pickFromCamera = 'من الكاميرا';
+  static const changeImage = 'تغيير الصورة';
+  static const deleteImage = 'حذف الصورة';
+  static const tapToView = 'اضغط للتكبير';
+  static const imageDeleted = 'تم حذف الصورة';
 }

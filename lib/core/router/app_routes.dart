@@ -2,6 +2,9 @@
 class AppRoutes {
   AppRoutes._();
 
+  // Splash
+  static const splash = 'splash';
+
   // Tab roots
   static const home = 'home';
   static const receipts = 'receipts';

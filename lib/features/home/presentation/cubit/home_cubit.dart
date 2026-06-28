@@ -1,12 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../receipts/domain/entities/receipt.dart';
 import '../../../receipts/domain/usecases/receipt_usecases.dart';
 import '../../../reminders/domain/entities/reminder.dart';
-import '../../../subscriptions/domain/entities/subscription.dart';
+import '../../../reminders/domain/reminder_builder.dart';
 import '../../../subscriptions/domain/usecases/subscription_usecases.dart';
-import '../../../warranties/domain/entities/warranty.dart';
 import '../../../warranties/domain/usecases/warranty_usecases.dart';
 
 class HomeState extends Equatable {
@@ -77,7 +75,11 @@ class HomeCubit extends Cubit<HomeState> {
     final subs = await _subs();
 
     final total = subs.fold<double>(0, (s, sub) => s + sub.monthlyCost);
-    final upcoming = _buildUpcoming(receipts, warranties, subs);
+    final upcoming = ReminderBuilder.build(
+      receipts: receipts,
+      warranties: warranties,
+      subscriptions: subs,
+    ).take(3).toList();
 
     emit(state.copyWith(
       loading: false,
@@ -87,68 +89,5 @@ class HomeCubit extends Cubit<HomeState> {
       monthlyTotal: total,
       upcoming: upcoming,
     ));
-  }
-
-  List<Reminder> _buildUpcoming(
-    List<Receipt> receipts,
-    List<Warranty> warranties,
-    List<Subscription> subs,
-  ) {
-    final now = DateTime.now();
-    final cutoff = DateTime(now.year, now.month, now.day);
-    final all = <Reminder>[];
-
-    for (final r in receipts) {
-      if (r.returnDeadline != null && !r.returnDeadline!.isBefore(cutoff)) {
-        all.add(Reminder(
-          id: r.id.hashCode,
-          title: 'إرجاع - ${r.merchant}',
-          subtitle: 'آخر موعد للإرجاع',
-          due: r.returnDeadline!,
-          kind: ReminderKind.returnDeadline,
-          entityId: r.id,
-        ));
-      }
-      if (r.exchangeDeadline != null &&
-          !r.exchangeDeadline!.isBefore(cutoff)) {
-        all.add(Reminder(
-          id: '${r.id}ex'.hashCode,
-          title: 'استبدال - ${r.merchant}',
-          subtitle: 'آخر موعد للاستبدال',
-          due: r.exchangeDeadline!,
-          kind: ReminderKind.exchangeDeadline,
-          entityId: r.id,
-        ));
-      }
-    }
-
-    for (final w in warranties) {
-      if (!w.endDate.isBefore(cutoff)) {
-        all.add(Reminder(
-          id: w.id.hashCode,
-          title: 'ضمان - ${w.productName}',
-          subtitle: 'انتهاء الضمان',
-          due: w.endDate,
-          kind: ReminderKind.warrantyExpiry,
-          entityId: w.id,
-        ));
-      }
-    }
-
-    for (final s in subs) {
-      if (!s.nextRenewalDate.isBefore(cutoff)) {
-        all.add(Reminder(
-          id: s.id.hashCode,
-          title: 'تجديد - ${s.name}',
-          subtitle: 'تاريخ التجديد',
-          due: s.nextRenewalDate,
-          kind: ReminderKind.subscriptionRenewal,
-          entityId: s.id,
-        ));
-      }
-    }
-
-    all.sort((a, b) => a.due.compareTo(b.due));
-    return all.take(3).toList();
   }
 }

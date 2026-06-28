@@ -130,7 +130,11 @@ class _WarrantyFormPageState extends State<WarrantyFormPage> {
                                   TextStyle(color: AppColors.textSecondary)),
                         ],
                       )
-                    : Image.file(File(_imagePath!), fit: BoxFit.cover),
+                    : Image.file(
+                        File(_imagePath!),
+                        width: double.infinity,
+                        fit: BoxFit.contain,
+                      ),
               ),
             ),
             const SizedBox(height: AppSpacing.lg),

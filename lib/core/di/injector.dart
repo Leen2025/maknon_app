@@ -106,12 +106,14 @@ Future<void> initInjector() async {
         saveReceipt: sl(),
         deleteReceipt: sl(),
         scheduleReminders: sl(),
+        imageStorage: sl(),
       ));
   sl.registerFactory(() => WarrantiesCubit(
         getAll: sl(),
         save: sl(),
         delete: sl(),
         scheduleReminders: sl(),
+        imageStorage: sl(),
       ));
   sl.registerFactory(() => SubscriptionsCubit(
         getAll: sl(),

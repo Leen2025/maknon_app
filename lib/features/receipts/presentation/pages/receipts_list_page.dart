@@ -68,21 +68,25 @@ class _ReceiptsListPageState extends State<ReceiptsListPage> {
               message: AppStrings.noReceiptsHint,
             );
           }
-          return ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.pagePadding),
-            itemCount: state.receipts.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: AppSpacing.sm),
-            itemBuilder: (_, i) {
-              final r = state.receipts[i];
-              return ReceiptCard(
-                receipt: r,
-                onTap: () => context.pushNamed(
-                  AppRoutes.receiptDetails,
-                  pathParameters: {'id': r.id},
-                ),
-              );
-            },
+          return RefreshIndicator(
+            onRefresh: () => context.read<ReceiptsCubit>().load(),
+            child: ListView.separated(
+              padding: const EdgeInsets.all(AppSpacing.pagePadding),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: state.receipts.length,
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.sm),
+              itemBuilder: (_, i) {
+                final r = state.receipts[i];
+                return ReceiptCard(
+                  receipt: r,
+                  onTap: () => context.pushNamed(
+                    AppRoutes.receiptDetails,
+                    pathParameters: {'id': r.id},
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

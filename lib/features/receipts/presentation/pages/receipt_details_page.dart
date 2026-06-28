@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,11 +5,16 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/di/injector.dart';
 import '../../../../core/router/app_routes.dart';
+import '../../../../core/services/image_storage_service.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/countdown_badge.dart';
+import '../../../../core/widgets/detail_image.dart';
+import '../../../../core/widgets/full_screen_image_viewer.dart';
+import '../../../../core/widgets/image_picker_sheet.dart';
 import '../../domain/entities/receipt.dart';
 import '../cubit/receipts_cubit.dart';
 import '../cubit/receipts_state.dart';
@@ -82,20 +85,56 @@ class _DetailsBody extends StatelessWidget {
   final Receipt receipt;
   final VoidCallback onDelete;
 
+  Future<void> _openImage(BuildContext context) async {
+    final action = await FullScreenImageViewer.open(
+      context,
+      imagePath: receipt.imagePath!,
+      heroTag: 'receipt-image-${receipt.id}',
+    );
+    if (action == null || !context.mounted) return;
+
+    final cubit = context.read<ReceiptsCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (action == ImageViewerAction.replace) {
+      final path =
+          await ImagePickerSheet.show(context, sl<ImageStorageService>());
+      if (path != null) {
+        final oldPath = receipt.imagePath;
+        await cubit.saveReceipt(receipt.copyWith(imagePath: path));
+        await sl<ImageStorageService>().delete(oldPath);
+      }
+    } else if (action == ImageViewerAction.delete) {
+      await sl<ImageStorageService>().delete(receipt.imagePath);
+      await cubit.saveReceipt(_withoutImage(receipt));
+      messenger.showSnackBar(
+        const SnackBar(content: Text(AppStrings.imageDeleted)),
+      );
+    }
+  }
+
+  /// copyWith can't null out [imagePath], so rebuild explicitly.
+  Receipt _withoutImage(Receipt r) => Receipt(
+        id: r.id,
+        merchant: r.merchant,
+        amount: r.amount,
+        purchaseDate: r.purchaseDate,
+        returnDeadline: r.returnDeadline,
+        exchangeDeadline: r.exchangeDeadline,
+        imagePath: null,
+        notes: r.notes,
+      );
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       children: [
         if (receipt.imagePath != null)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            child: Image.file(
-              File(receipt.imagePath!),
-              height: 220,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+          DetailImage(
+            imagePath: receipt.imagePath!,
+            heroTag: 'receipt-image-${receipt.id}',
+            onTap: () => _openImage(context),
           ),
         const SizedBox(height: AppSpacing.lg),
         Container(

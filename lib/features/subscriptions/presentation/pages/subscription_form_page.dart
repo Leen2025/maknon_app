@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_picker_helper.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/widgets/app_primary_button.dart';
@@ -49,7 +50,7 @@ class _SubscriptionFormPageState extends State<SubscriptionFormPage> {
         .firstOrNull;
     if (s == null) return;
     _nameCtrl.text = s.name;
-    _priceCtrl.text = s.price.toString();
+    _priceCtrl.text = CurrencyFormatter.plain(s.price);
     _notesCtrl.text = s.notes ?? '';
     _cycle = s.cycle;
     _renewal = s.nextRenewalDate;

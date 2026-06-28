@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,10 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/di/injector.dart';
 import '../../../../core/router/app_routes.dart';
+import '../../../../core/services/image_storage_service.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/countdown_badge.dart';
+import '../../../../core/widgets/detail_image.dart';
+import '../../../../core/widgets/full_screen_image_viewer.dart';
+import '../../../../core/widgets/image_picker_sheet.dart';
 import '../../domain/entities/warranty.dart';
 import '../cubit/warranties_cubit.dart';
 
@@ -78,20 +81,55 @@ class _Body extends StatelessWidget {
   final Warranty warranty;
   final VoidCallback onDelete;
 
+  Future<void> _openImage(BuildContext context) async {
+    final action = await FullScreenImageViewer.open(
+      context,
+      imagePath: warranty.imagePath!,
+      heroTag: 'warranty-image-${warranty.id}',
+    );
+    if (action == null || !context.mounted) return;
+
+    final cubit = context.read<WarrantiesCubit>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (action == ImageViewerAction.replace) {
+      final path =
+          await ImagePickerSheet.show(context, sl<ImageStorageService>());
+      if (path != null) {
+        final oldPath = warranty.imagePath;
+        await cubit.saveWarranty(warranty.copyWith(imagePath: path));
+        await sl<ImageStorageService>().delete(oldPath);
+      }
+    } else if (action == ImageViewerAction.delete) {
+      await sl<ImageStorageService>().delete(warranty.imagePath);
+      await cubit.saveWarranty(_withoutImage(warranty));
+      messenger.showSnackBar(
+        const SnackBar(content: Text(AppStrings.imageDeleted)),
+      );
+    }
+  }
+
+  /// copyWith can't null out [imagePath], so rebuild explicitly.
+  Warranty _withoutImage(Warranty w) => Warranty(
+        id: w.id,
+        productName: w.productName,
+        startDate: w.startDate,
+        endDate: w.endDate,
+        merchant: w.merchant,
+        imagePath: null,
+        notes: w.notes,
+      );
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       children: [
         if (warranty.imagePath != null)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            child: Image.file(
-              File(warranty.imagePath!),
-              height: 220,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+          DetailImage(
+            imagePath: warranty.imagePath!,
+            heroTag: 'warranty-image-${warranty.id}',
+            onTap: () => _openImage(context),
           ),
         const SizedBox(height: AppSpacing.lg),
         Container(

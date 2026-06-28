@@ -69,24 +69,28 @@ class _SubscriptionsListPageState extends State<SubscriptionsListPage> {
               message: AppStrings.noSubscriptionsHint,
             );
           }
-          return ListView(
-            padding: const EdgeInsets.all(AppSpacing.pagePadding),
-            children: [
-              _MonthlyTotalCard(total: state.monthlyTotal),
-              const SizedBox(height: AppSpacing.lg),
-              ...state.subscriptions.map(
-                (s) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: SubscriptionCard(
-                    subscription: s,
-                    onTap: () => context.pushNamed(
-                      AppRoutes.subscriptionDetails,
-                      pathParameters: {'id': s.id},
+          return RefreshIndicator(
+            onRefresh: () => context.read<SubscriptionsCubit>().load(),
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.pagePadding),
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                _MonthlyTotalCard(total: state.monthlyTotal),
+                const SizedBox(height: AppSpacing.lg),
+                ...state.subscriptions.map(
+                  (s) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                    child: SubscriptionCard(
+                      subscription: s,
+                      onTap: () => context.pushNamed(
+                        AppRoutes.subscriptionDetails,
+                        pathParameters: {'id': s.id},
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

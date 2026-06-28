@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/image_storage_service.dart';
 import '../../../reminders/domain/usecases/schedule_reminders_for_warranty.dart';
 import '../../domain/entities/warranty.dart';
 import '../../domain/usecases/warranty_usecases.dart';
@@ -40,16 +41,19 @@ class WarrantiesCubit extends Cubit<WarrantiesState> {
     required SaveWarranty save,
     required DeleteWarranty delete,
     required ScheduleRemindersForWarranty scheduleReminders,
+    required ImageStorageService imageStorage,
   })  : _getAll = getAll,
         _save = save,
         _delete = delete,
         _schedule = scheduleReminders,
+        _imageStorage = imageStorage,
         super(const WarrantiesState());
 
   final GetAllWarranties _getAll;
   final SaveWarranty _save;
   final DeleteWarranty _delete;
   final ScheduleRemindersForWarranty _schedule;
+  final ImageStorageService _imageStorage;
 
   Future<void> load() async {
     emit(state.copyWith(status: WarrantiesStatus.loading));
@@ -71,8 +75,10 @@ class WarrantiesCubit extends Cubit<WarrantiesState> {
   }
 
   Future<void> deleteWarranty(String id) async {
+    final w = state.warranties.where((x) => x.id == id).firstOrNull;
     await _delete(id);
     await _schedule.cancel(id);
+    await _imageStorage.delete(w?.imagePath);
     await load();
   }
 }

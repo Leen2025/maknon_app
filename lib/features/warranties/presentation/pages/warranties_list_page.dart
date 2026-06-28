@@ -67,21 +67,25 @@ class _WarrantiesListPageState extends State<WarrantiesListPage> {
               message: AppStrings.noWarrantiesHint,
             );
           }
-          return ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.pagePadding),
-            itemCount: state.warranties.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: AppSpacing.sm),
-            itemBuilder: (_, i) {
-              final w = state.warranties[i];
-              return WarrantyCard(
-                warranty: w,
-                onTap: () => context.pushNamed(
-                  AppRoutes.warrantyDetails,
-                  pathParameters: {'id': w.id},
-                ),
-              );
-            },
+          return RefreshIndicator(
+            onRefresh: () => context.read<WarrantiesCubit>().load(),
+            child: ListView.separated(
+              padding: const EdgeInsets.all(AppSpacing.pagePadding),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: state.warranties.length,
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.sm),
+              itemBuilder: (_, i) {
+                final w = state.warranties[i];
+                return WarrantyCard(
+                  warranty: w,
+                  onTap: () => context.pushNamed(
+                    AppRoutes.warrantyDetails,
+                    pathParameters: {'id': w.id},
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

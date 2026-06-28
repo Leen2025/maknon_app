@@ -10,6 +10,7 @@ import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/di/injector.dart';
 import '../../../../core/services/image_storage_service.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_picker_helper.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/widgets/app_primary_button.dart';
@@ -57,7 +58,7 @@ class _ReceiptFormPageState extends State<ReceiptFormPage> {
         .firstOrNull;
     if (r == null) return;
     _merchantCtrl.text = r.merchant;
-    _amountCtrl.text = r.amount.toString();
+    _amountCtrl.text = CurrencyFormatter.plain(r.amount);
     _notesCtrl.text = r.notes ?? '';
     _purchaseDate = r.purchaseDate;
     _returnDeadline = r.returnDeadline;
@@ -217,7 +218,11 @@ class _ImagePicker extends StatelessWidget {
                       style: TextStyle(color: AppColors.textSecondary)),
                 ],
               )
-            : Image.file(File(path!), fit: BoxFit.cover),
+            : Image.file(
+                File(path!),
+                width: double.infinity,
+                fit: BoxFit.contain,
+              ),
       ),
     );
   }

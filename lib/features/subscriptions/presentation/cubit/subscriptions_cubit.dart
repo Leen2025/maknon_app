@@ -59,7 +59,24 @@ class SubscriptionsCubit extends Cubit<SubscriptionsState> {
   Future<void> load() async {
     emit(state.copyWith(status: SubscriptionsStatus.loading));
     try {
-      final list = await _getAll();
+      var list = await _getAll();
+
+      // Roll forward any subscription whose renewal date has passed so the
+      // total, dates, and notifications always reflect the next real cycle.
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      var advancedAny = false;
+      for (final s in list) {
+        if (s.nextRenewalDate.isBefore(today)) {
+          final advanced =
+              s.copyWith(nextRenewalDate: _nextRenewal(s, today));
+          await _save(advanced);
+          await _schedule(advanced);
+          advancedAny = true;
+        }
+      }
+      if (advancedAny) list = await _getAll();
+
       emit(state.copyWith(
         status: SubscriptionsStatus.loaded,
         subscriptions: list,
@@ -70,6 +87,18 @@ class SubscriptionsCubit extends Cubit<SubscriptionsState> {
         errorMessage: e.toString(),
       ));
     }
+  }
+
+  /// Advances [s]'s renewal date by whole cycles until it lands on or after
+  /// [today].
+  DateTime _nextRenewal(Subscription s, DateTime today) {
+    var d = s.nextRenewalDate;
+    while (d.isBefore(today)) {
+      d = s.cycle == BillingCycle.monthly
+          ? DateTime(d.year, d.month + 1, d.day)
+          : DateTime(d.year + 1, d.month, d.day);
+    }
+    return d;
   }
 
   Future<void> saveSubscription(Subscription s) async {
