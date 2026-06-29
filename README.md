@@ -4,6 +4,28 @@
 <img width="1381" height="1139" alt="dc8508b5-feef-4eb9-841b-2a9fd2ca1492" src="https://github.com/user-attachments/assets/3750e46f-632b-484a-9883-790a7d4cd96b" />
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-06-29 at 18 09 35" src="https://github.com/user-attachments/assets/a90e5edf-7601-47c5-99dc-b2f2032cb8e7" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-06-29 at 18 09 23" src="https://github.com/user-attachments/assets/35e62a7f-196b-4906-a4c2-e4d44d98a895" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-06-29 at 18 09 57" src="https://github.com/user-attachments/assets/adc643b7-b996-4ccf-8fc2-bf4f7849f544" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-06-29 at 18 03 38" src="https://github.com/user-attachments/assets/2f6eb8d8-77cc-4c96-883d-fe325cb0ecbf" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-06-23 at 20 18 18" src="https://github.com/user-attachments/assets/66649d23-9cc3-4a80-acd8-d66fc753f487" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 - 2026-06-29 at 18 08 47" src="https://github.com/user-attachments/assets/51c0f119-2885-47e8-8ac7-c9e32cf52df5" />
+
+
 A Flutter app for storing and managing receipts, warranties, return/exchange deadlines, and subscription renewals — with local reminders before anything expires.
 
 **Local-first** — all data lives on the device in Hive. No login, no cloud, fully offline.
