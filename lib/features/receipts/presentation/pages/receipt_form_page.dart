@@ -11,6 +11,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/di/injector.dart';
 import '../../../../core/services/image_storage_service.dart';
 import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/utils/number_input_formatter.dart';
 import '../../../../core/utils/date_picker_helper.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/widgets/app_primary_button.dart';
@@ -128,6 +129,7 @@ class _ReceiptFormPageState extends State<ReceiptFormPage> {
               label: '${AppStrings.amount} (${AppStrings.sar})',
               controller: _amountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: const [ArabicDigitsFormatter()],
               validator: (v) {
                 final n = double.tryParse((v ?? '').trim());
                 if (n == null || n < 0) return AppStrings.required;

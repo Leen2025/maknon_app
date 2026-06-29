@@ -13,9 +13,24 @@ import '../../../../core/widgets/countdown_badge.dart';
 import '../../domain/entities/subscription.dart';
 import '../cubit/subscriptions_cubit.dart';
 
-class SubscriptionDetailsPage extends StatelessWidget {
+class SubscriptionDetailsPage extends StatefulWidget {
   const SubscriptionDetailsPage({super.key, required this.id});
   final String id;
+
+  @override
+  State<SubscriptionDetailsPage> createState() =>
+      _SubscriptionDetailsPageState();
+}
+
+class _SubscriptionDetailsPageState extends State<SubscriptionDetailsPage> {
+  String get id => widget.id;
+
+  @override
+  void initState() {
+    super.initState();
+    final cubit = context.read<SubscriptionsCubit>();
+    if (cubit.state.status == SubscriptionsStatus.initial) cubit.load();
+  }
 
   Future<void> _delete(BuildContext context) async {
     final ok = await showDialog<bool>(
@@ -60,6 +75,10 @@ class SubscriptionDetailsPage extends StatelessWidget {
         builder: (_, state) {
           final s = state.subscriptions.where((x) => x.id == id).firstOrNull;
           if (s == null) {
+            if (state.status == SubscriptionsStatus.loaded ||
+                state.status == SubscriptionsStatus.error) {
+              return const Center(child: Text(AppStrings.notFound));
+            }
             return const Center(child: CircularProgressIndicator());
           }
           return _Body(

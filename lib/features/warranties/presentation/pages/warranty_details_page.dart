@@ -17,9 +17,23 @@ import '../../../../core/widgets/image_picker_sheet.dart';
 import '../../domain/entities/warranty.dart';
 import '../cubit/warranties_cubit.dart';
 
-class WarrantyDetailsPage extends StatelessWidget {
+class WarrantyDetailsPage extends StatefulWidget {
   const WarrantyDetailsPage({super.key, required this.id});
   final String id;
+
+  @override
+  State<WarrantyDetailsPage> createState() => _WarrantyDetailsPageState();
+}
+
+class _WarrantyDetailsPageState extends State<WarrantyDetailsPage> {
+  String get id => widget.id;
+
+  @override
+  void initState() {
+    super.initState();
+    final cubit = context.read<WarrantiesCubit>();
+    if (cubit.state.status == WarrantiesStatus.initial) cubit.load();
+  }
 
   Future<void> _delete(BuildContext context) async {
     final ok = await showDialog<bool>(
@@ -64,6 +78,10 @@ class WarrantyDetailsPage extends StatelessWidget {
         builder: (_, state) {
           final w = state.warranties.where((x) => x.id == id).firstOrNull;
           if (w == null) {
+            if (state.status == WarrantiesStatus.loaded ||
+                state.status == WarrantiesStatus.error) {
+              return const Center(child: Text(AppStrings.notFound));
+            }
             return const Center(child: CircularProgressIndicator());
           }
           return _Body(

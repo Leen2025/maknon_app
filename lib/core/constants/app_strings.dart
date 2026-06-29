@@ -67,6 +67,7 @@ class AppStrings {
 
   // Common
   static const genericError = 'حدث خطأ، يرجى المحاولة مجدداً';
+  static const notFound = 'العنصر غير موجود';
   static const retry = 'إعادة المحاولة';
   static const save = 'حفظ';
   static const cancel = 'إلغاء';

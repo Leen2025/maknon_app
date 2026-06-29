@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/utils/number_input_formatter.dart';
 import '../../../../core/utils/date_picker_helper.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../../../core/widgets/app_primary_button.dart';
@@ -102,6 +103,7 @@ class _SubscriptionFormPageState extends State<SubscriptionFormPage> {
               controller: _priceCtrl,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: const [ArabicDigitsFormatter()],
               validator: (v) {
                 final n = double.tryParse((v ?? '').trim());
                 if (n == null || n < 0) return AppStrings.required;

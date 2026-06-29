@@ -19,10 +19,26 @@ import '../../domain/entities/receipt.dart';
 import '../cubit/receipts_cubit.dart';
 import '../cubit/receipts_state.dart';
 
-class ReceiptDetailsPage extends StatelessWidget {
+class ReceiptDetailsPage extends StatefulWidget {
   const ReceiptDetailsPage({super.key, required this.id});
 
   final String id;
+
+  @override
+  State<ReceiptDetailsPage> createState() => _ReceiptDetailsPageState();
+}
+
+class _ReceiptDetailsPageState extends State<ReceiptDetailsPage> {
+  String get id => widget.id;
+
+  @override
+  void initState() {
+    super.initState();
+    // When reached directly from Home (Receipts tab never opened), the cubit
+    // may still be empty — make sure its data is loaded.
+    final cubit = context.read<ReceiptsCubit>();
+    if (cubit.state.status == ReceiptsStatus.initial) cubit.load();
+  }
 
   Future<void> _delete(BuildContext context) async {
     final ok = await showDialog<bool>(
@@ -67,6 +83,11 @@ class ReceiptDetailsPage extends StatelessWidget {
         builder: (_, state) {
           final r = state.receipts.where((x) => x.id == id).firstOrNull;
           if (r == null) {
+            // Still loading → spinner; finished but missing → not found.
+            if (state.status == ReceiptsStatus.loaded ||
+                state.status == ReceiptsStatus.error) {
+              return const Center(child: Text(AppStrings.notFound));
+            }
             return const Center(child: CircularProgressIndicator());
           }
           return _DetailsBody(
